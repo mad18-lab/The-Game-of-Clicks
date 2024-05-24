@@ -7,13 +7,15 @@ import Button from '@mui/material/Button';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
+import { DialogContentText } from '@mui/material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const PlayerSection = ({ playerName, setScore, currScore, setTimer, currTimer, setFinished }) => {
+const PlayerSection = ({ playerName, setScore, currScore, setTimer, currTimer, setFinished, value }) => {
   const [isSelected, setSelected] = useState(false);
+  const [openRules, setOpenRules] = useState(false);
 
   useEffect(() => {
     if (!isSelected) return;
@@ -43,6 +45,14 @@ const PlayerSection = ({ playerName, setScore, currScore, setTimer, currTimer, s
     setScore(0);
   }
 
+  const handleOpen = () => {
+    setOpenRules(true);
+  }
+
+  const handleRuleClose = () => {
+    setOpenRules(false);
+  }
+
   const handleClick = () => {
     setScore(currScore + 1);
   }
@@ -56,7 +66,7 @@ const PlayerSection = ({ playerName, setScore, currScore, setTimer, currTimer, s
             <p>Total Clicks</p>
           </div>
           <div>
-            <h1 className={styles.h1}>Player: {playerName}</h1>
+            <h1 className={styles.h1}>Player {value}: {playerName}</h1>
           </div>
           <div>
             <p>{currTimer}</p>
@@ -68,9 +78,34 @@ const PlayerSection = ({ playerName, setScore, currScore, setTimer, currTimer, s
         </div>
         <div className={styles.buttons}>
           <button className={styles.butt} onClick={handleClick} disabled={isSelected === false || currTimer === 0}>Click Me</button>
-          <button className={styles.butt} onClick={handleReset}>Reset Timer & Score</button>
+          <div className={styles.buttSec}>
+            <button className={styles.butt} onClick={handleReset}>Reset Timer & Score</button>
+            <button className={styles.butt} onClick={handleOpen}>How to Play</button>
+          </div>
         </div>
       </div>
+      <Dialog
+        open={openRules}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleRuleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>How to Play The Game of Clicks</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <ul>
+              <li>Click on the Red Light image to make it green and start your turn.</li>
+              <li>Click on the 'Click Me' button below the image as fast and as many times as you can within 30 seconds.</li>
+              <li>You can reset the timer and score if you wish with the 'Reset Timer & Score' button.</li>
+              <li><b>Your clicks will only be counted if and only if the light is green.</b></li>
+            </ul>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRuleClose}>Continue Playing</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
@@ -107,13 +142,10 @@ const HomePage = () => {
     }
   }, [player1Finished, player2Finished]);
 
-  const handleOpen = () => {
-    setOpen(true);
-  }
-
   const handleClose = (event, reason) => {
     if (reason !== 'backdropClick') {
       setOpen(false);
+      location.reload();
     }
   }
 
@@ -130,6 +162,7 @@ const HomePage = () => {
         currTimer={player1Timer}
         setTimer={setPlayer1Timer}
         setFinished={setPlayer1Finished}
+        value={1}
       />
           
       <hr className={styles.line} />
@@ -141,6 +174,7 @@ const HomePage = () => {
         currTimer={player2Timer}
         setTimer={setPlayer2Timer}
         setFinished={setPlayer2Finished}
+        value={2}
       />
 
       <Dialog

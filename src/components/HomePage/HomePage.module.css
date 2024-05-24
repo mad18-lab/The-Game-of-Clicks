@@ -38,6 +38,7 @@
     align-items: center;
     margin: 0 auto;
     gap: 8px;
+    padding-bottom: 16px;
 }
 
 .butt {
@@ -54,4 +55,9 @@
         color: black;
         border: 1px solid black;
     }
+}
+
+.buttSec {
+    display: flex;
+    gap: 5px;
 }
